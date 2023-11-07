@@ -147,7 +147,7 @@ class PPPing
 	 **/
 	function Randomise($identity = true, $sequence = false)
 	{
-		mt_srand(microtime() * 1000000);
+		mt_srand(microtime(true) * 1000000);
 		if ($identity) $this->identity = mt_rand(0, 65534);
 		if ($sequence) $this->sequence = mt_rand(0, 65534);
 	}
@@ -188,7 +188,7 @@ class PPPing
 	/**
 	 * Constructor - randomises ID
 	 **/
-	function PPPing()
+	function __construct()
 	{
 		$this->Randomise();
 	}
@@ -282,7 +282,7 @@ class PPPing
 
 
 		// Connect Socket
-		$sconn = socket_connect($socket, $host, null); // @
+		$sconn = socket_connect($socket, $host, 0); // @
 		if (!$sconn) return 0;
 
 		// Package Size

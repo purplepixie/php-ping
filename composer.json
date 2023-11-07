@@ -1,0 +1,20 @@
+{
+    "name": "purplepixie/php-ping",
+    "authors": [
+      {
+        "name": "David Cutting",
+        "email": "dcutting@purplepixie.org"
+      }
+    ],
+    "description": "PHP ICMP/Ping Network Client",
+    "license": "GPL-3.0-only",
+    "autoload": {
+      "psr-0": {
+        "PurplePixie": "src/"
+      }
+    },
+    "require": {
+      "php": ">=7.0"
+    }
+  }
+  
