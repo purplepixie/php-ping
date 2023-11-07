@@ -71,7 +71,7 @@ declare(ticks=1);
 if (function_exists("pnctl_signal")) {
     pcntl_signal(SIGTERM, "signal_shutdown");
     pcntl_signal(SIGHUP, "signal_shutdown");
-    pnctl_signal(SIGKILL, "signal_shutdown");
+    pcntl_signal(SIGKILL, "signal_shutdown");
 }
 
 /**
@@ -140,16 +140,16 @@ $successes = 0;
 
 $failures = 0;
 
-for ($i = 0; $i < $_SERVER['argc']; $i++) {
+for ($i = 1; $i < $_SERVER['argc']; $i++) {
     switch ($_SERVER['argv'][$i]) {
         case "--ttl":
         case "-t":
-            $ping->ttl = $_SERVER['argv'][++$i];
-            echo "Setting TTL to " . $ping->ttl . "\n";
+            $ping->setTTL($_SERVER['argv'][++$i]);
+            echo "Setting TTL to " . $ping->getTTL() . "\n";
             break;
         case "--debug":
         case "-d":
-            $ping->debug = true;
+            $ping->setDebug(true);
             echo "Debug Mode Enabled\n";
             break;
         case "--delay":
@@ -165,15 +165,17 @@ for ($i = 0; $i < $_SERVER['argc']; $i++) {
         case "-h":
             DisplayHelp();
             exit();
-            break;
-
         default:
-            $ping->hostname = $_SERVER['argv'][$i];
+            $host = trim($_SERVER['argv'][$i]);
+            if ($host != "")
+            {
+                $ping->setHostname($host);
+            }
             break;
     }
 }
 
-if ($ping->hostname == "") {
+if ($ping->getHostname() == "") {
     DisplayHelp();
     exit();
 }
@@ -195,7 +197,7 @@ while (!$quit) {
      * Set ping sequence
      **/
 
-    $ping->sequence = $count;
+    $ping->setSequence($count);
     echo $count . ": ";
     $start = microtime(true);
     /**
@@ -209,8 +211,8 @@ while (!$quit) {
     } else {
         $successes++;
         $times[] = $result;
-        if ($ping->last["set"]) {
-            echo "Reply from " . $ping->last["source"] . " " . $result . "ms" . " | ttl: " . $ping->last["ttl"] . " hops: " . $ping->last["hops"];
+        if ($ping->getLast()["set"]) {
+            echo "Reply from " . $ping->getLast()["source"] . " " . $result . "ms" . " | ttl: " . $ping->getLast()["ttl"] . " hops: " . $ping->getLast()["hops"];
         } else echo $result . "ms";
     }
     echo "\n";

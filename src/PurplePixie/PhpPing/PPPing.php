@@ -41,52 +41,52 @@ class PPPing
 	 * -1 Uses system default (usually 64). Please note that this is currently
 	 * not functional.
 	 **/
-	var $ttl = -1;
+	private $ttl = -1;
 
 	/**
 	 * Hostname to ping (resolvable host or IP address)
 	 **/
-	var $hostname = "";
+	private $hostname = "";
 
 	/**
 	 * Identifier - will fill with random content (16 bits)
 	 **/
-	var $identity = 0;
+	private $identity = 0;
 
 	/**
 	 * Sequence number in decimal (16 bits)
 	 **/
-	var $sequence = 0;
+	private $sequence = 0;
 
 	/**
 	 * Timeout in seconds - maximum wait for a response before timeout
 	 **/
-	var $timeout = 10;
+	private $timeout = 10;
 
 	/**
 	 * Timer start seconds
 	 **/
-	var $timer_start_sec = 0;
+	private $timer_start_sec = 0;
 
 	/**
 	 * Timer start mseconds
 	 **/
-	var $timer_start_msec = 0;
+	private $timer_start_msec = 0;
 
 	/**
 	 * Data package for the ping
 	 **/
-	var $data_package = "PPPing";
+	private $data_package = "PPPing";
 
 	/**
 	 * Debug - prints output to the screen
 	 **/
-	var $debug = false;
+	private $debug = false;
 
 	/**
 	 * Holds information on last result
 	 **/
-	var $last = array();
+	private $last = array();
 
 	/**
 	 * Clears last data
@@ -105,7 +105,7 @@ class PPPing
 	/**
 	 * Get a padded hex identifier
 	 **/
-	function getIdentity()
+	function makeIdentity()
 	{
 		if ((is_numeric($this->identity)) && ($this->identity >= 0) && ($this->identity < 65535))
 			$id = $this->identity;
@@ -121,7 +121,7 @@ class PPPing
 	/**
 	 * Get a padded hex sequence
 	 **/
-	function getSequence()
+	function makeSequence()
 	{
 		if ((is_numeric($this->sequence)) && ($this->sequence >= 0) && ($this->sequence < 65535))
 			$seq = $this->sequence;
@@ -238,11 +238,11 @@ class PPPing
 		$type = "\x08"; // icmp echo
 		$code = "\x00";
 		$checksum = "\x00\x00"; // initial
-		$identifier = $this->getIdentity();
+		$identifier = $this->makeIdentity();
 		$dec_identity = $this->identity;
 		//$identifier = "\x00\x00";
 		//$seqNumber = "\x00\x00";
-		$seqNumber = $this->getSequence();
+		$seqNumber = $this->makeSequence();
 		$dec_sequence = $this->sequence;
 		$data = $this->data_package;
 		$package = $type . $code . $checksum . $identifier . $seqNumber . $data;
@@ -404,4 +404,22 @@ class PPPing
 				return "Unknown Error";
 		}
 	}
+
+	/* Getters and Setters */
+	function getHostname() { return $this->hostname; }
+	function setHostname($host) { $this->hostname = $host; }
+	function getTTL() { return $this->ttl; }
+	function setTTL($ttl) { $this->ttl = $ttl; }
+	function getTimeout() { return $this->timeout; }
+	function setTimeout($t) { $this->timeout = $t; }
+	function getPackage() { return $this->data_package; }
+	function setPackage($p) { $this->data_package = $p; }
+	function getDebug() { return $this->debug; }
+	function setDebug($d) { $this->debug = $d; }
+	function getSequence() { return $this->sequence; }
+	function setSequence($s) { $this->sequence = $s; }
+
+	// Getters only
+	function getIdentity() { return $this->identity; }
+	function getLast() { return $this->last; }
 }
